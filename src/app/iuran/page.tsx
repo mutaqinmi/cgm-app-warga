@@ -7,7 +7,6 @@ import { create } from 'zustand';
 import * as dateConvert from '@/lib/date-converter';
 import DropDown from '@/components/dropdown';
 import DropDownItem from '@/components/dropdown-item';
-import Card from '@/components/card';
 import { CaretRight, HandCoins, Users } from '@phosphor-icons/react';
 import Container from '@/components/container';
 import ChoiceChip from '@/components/choice-chip';
@@ -22,6 +21,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import numberFormatter from '@/lib/formatter';
 import StatusChip from "@/components/status-chip";
 import PaymentPopup from "@/components/payment-popup";
+import FeeCard from "@/components/fee-card";
 
 interface ComponentState {
     selectedContext: string,
@@ -30,7 +30,7 @@ interface ComponentState {
     showSetFeePopup: boolean,
     searchKeyword: string,
     currentMonthData: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[] | null,
-    userData: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[],
+    userData: {fees: schema.feesType, payments: schema.paymentsType, user_id: number, name: string, address: string, phone: string, rt: string}[],
     usersList: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[],
     userListPagination: number,
     feeList: schema.feesType[],
@@ -47,7 +47,7 @@ interface ComponentState {
     setShowSetFeePopup: (showSetFeePopup: boolean) => void,
     setSearchKeyword: (searchKeyword: string) => void,
     setCurrentMonthData: (currentMonthData: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[]) => void,
-    setUserData: (userData: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[]) => void,
+    setUserData: (userData: {fees: schema.feesType, payments: schema.paymentsType, user_id: number, name: string, address: string, phone: string, rt: string}[]) => void,
     setUsersList: (usersList: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[]) => void,
     setUserListPagination: (userListPagination: number) => void,
     setFeeList: (feeList: schema.feesType[]) => void,
@@ -85,7 +85,7 @@ const useComponent = create<ComponentState>((set) => {
         setShowSetFeePopup: (showSetFeePopup: boolean) => set({showSetFeePopup}),
         setSearchKeyword: (searchKeyword: string) => set({searchKeyword}),
         setCurrentMonthData: (currentMonthData: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[]) => set({currentMonthData}),
-        setUserData: (userData: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[]) => set({userData}),
+        setUserData: (userData: {fees: schema.feesType, payments: schema.paymentsType, user_id: number, name: string, address: string, phone: string, rt: string}[]) => set({userData}),
         setUsersList: (usersList: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[]) => set({usersList}),
         setUserListPagination: (userListPagination: number) => set({userListPagination}),
         setFeeList: (feeList: schema.feesType[]) => set({feeList}),
@@ -129,7 +129,7 @@ function Iuran() {
         return await axios.get(`${process.env.API_URL}/warga?user_id=${user_id}&fee_id=${fee_id}`, { withCredentials: true })
             .then((res: AxiosResponse) => {
                 if(res.status === 200){
-                    const { data } = res.data as { data: {fees: schema.feesType, payments: schema.paymentsType, users: schema.usersType}[] };
+                    const { data } = res.data as { data: {fees: schema.feesType, payments: schema.paymentsType, user_id: number, name: string, address: string, phone: string, rt: string}[] };
                     component.setUserData(data);
                 }
             })
@@ -396,8 +396,8 @@ function Iuran() {
     }, [refresh]);
     
     return isLoading ? <LoadingAnimation/> : component.currentMonthData ? <NavigationBar sidebarIndex={1}>
-        {!component.currentMonthData.length ? <div className="w-full h-screen flex flex-col gap-8 justify-center items-center">
-            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)} belum diatur oleh Admin.</span>
+        {!component.currentMonthData.length ? <div className="w-full h-screen flex flex-col gap-8 justify-center items-center text-center">
+            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan</span>
         </div> : <>
             <div className="mt-8 flex justify-between items-center">
                 <div>
@@ -415,11 +415,10 @@ function Iuran() {
                     </div> : null}
                 </div>
             </div>
-            <div className="w-full mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-                <Card color="blue" title="Jumlah Warga" total={component.currentMonthData.length} nominal={component.currentMonthData.length * component.currentMonthData[0].fees.fee_amount!} icon={<Users/>}/>
-                <Card color="green" title="Sudah Lunas" total={totalDoneAmount} nominal={totalDoneAmount * component.currentMonthData[0].fees.fee_amount!} icon={<HandCoins/>}/>
-                <Card color="yellow" title="Menunggu Konfirmasi" total={totalPendingAmount} nominal={totalPendingAmount * component.currentMonthData[0].fees.fee_amount!} icon={<HandCoins/>}/>
-                <Card color="red" title="Belum Lunas" total={totalUndoneAmount} nominal={totalUndoneAmount * component.currentMonthData[0].fees.fee_amount!} icon={<HandCoins/>}/>
+            <div className="w-full mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+                <FeeCard color="blue" title="Jumlah Warga" total={component.currentMonthData.length} nominal={component.currentMonthData.length * component.currentMonthData[0].fees.fee_amount!} icon={<Users/>} className="col-span-2 md:col-span-1"/>
+                <FeeCard color="green" title="Sudah Lunas" total={totalDoneAmount} nominal={totalDoneAmount * component.currentMonthData[0].fees.fee_amount!} icon={<HandCoins/>}/>
+                <FeeCard color="red" title="Belum Lunas" total={totalUndoneAmount} nominal={totalUndoneAmount * component.currentMonthData[0].fees.fee_amount!} icon={<HandCoins/>}/>
             </div>
             <div className="mt-8 w-full grid grid-cols-1 md:grid-cols-5 gap-8">
                 <div className="col-span-1 md:col-span-3 flex flex-col gap-8">
