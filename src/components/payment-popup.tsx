@@ -53,7 +53,26 @@ export default function PaymentPopup(props: {refresh?: () => void; popupHandler:
         })
     }, [props])
 
-    const updatePaymentInfoHandler = (payment_id: number, payment_status: boolean, payment_description: string) => updatePaymentInfo(payment_id, payment_status, payment_description);
+    const setAdminNotification = useCallback(async (notification_title: string, notification_content: string) => {
+        return await axios.post(`${process.env.API_URL}/warga/notification`, {
+            notification_title,
+            notification_content,
+        }, { withCredentials: true })
+        .then((res: AxiosResponse) => {
+            if(res.status === 200){
+                return true;
+            }
+        })
+        .catch((error: AxiosError) => {
+            const { message } = error.response?.data as { message: string };
+            console.log(message);
+        })
+    }, [])
+
+    const updatePaymentInfoHandler = (payment_id: number, payment_status: boolean, payment_description: string) => {
+        updatePaymentInfo(payment_id, payment_status, payment_description);
+        if(payment_description === 'pending') setAdminNotification('Konfirmasi Pembayaran', `Konfirmasi pembayaran iuran bulan ${dateConvert.toString(component.paymentData[0].fees?.fee_date!)} a.n. ${component.paymentData[0].users?.name} untuk ${component.paymentData[0].users?.address}.`)
+    };
 
     useEffect(() => {
         getPaymentInfo(props.payment_id);
