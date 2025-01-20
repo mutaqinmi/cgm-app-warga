@@ -225,7 +225,7 @@ export default function Page(){
         
     return isLoading ? <LoadingAnimation/> : component.userData ? <NavigationBar sidebarIndex={0}>
         {!component.userData.length ? <div className="w-full h-screen flex flex-col gap-8 justify-center items-center text-center">
-            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan.</span>
+            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan.</span>
         </div> : <>
             {/* <div className="w-full mt-8 grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
                 <Card title="Iuran Bulan Ini" header="Rp. 55000" subtitle={<StatusChip status={component.userData[0]?.payments.payment_description!}/>} className="col-span-2 md:col-span-1"/>
@@ -236,7 +236,7 @@ export default function Page(){
                 <div className="col-span-1 md:col-span-3 flex flex-col gap-8">
                     <div className={`rounded-lg pt-4 ${paymentStatus(component.userData[0]?.payments.payment_description!)}`}>
                         <div className="mb-3 flex gap-2 px-4 text-white">
-                            <h1>Iuran Bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)}</h1>
+                            <h1>Iuran Bulan {dateConvert.toString(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`)}</h1>
                             <span className="leading-none">&#8226;</span>
                             <StatusChip status={component.userData[0]?.payments.payment_description!}/>
                         </div>
@@ -254,7 +254,7 @@ export default function Page(){
                     <Container>
                         <div className="flex justify-between items-center">
                             <h1 className="text-lg font-semibold">Riwayat Iuran</h1>
-                            <input type="month" className="[&::-webkit-datetime-edit]:text-sm [&::-webkit-calendar-picker-indicator]:invert-[1] p-2 bg-blue-500 rounded-md text-white outline-none" name="filter_fee_history" defaultValue={`${new Date().getFullYear()}-${new Date().getMonth() + 1}`} onChange={dateHistoryFilterHandler}/>
+                            <input type="month" className="[&::-webkit-datetime-edit]:text-sm [&::-webkit-calendar-picker-indicator]:invert-[1] p-2 bg-blue-500 rounded-md text-white outline-none" name="filter_fee_history" defaultValue={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`} onChange={dateHistoryFilterHandler}/>
                         </div>
                         <div className="flex gap-2 my-4 items-center">
                             <ChoiceChip label="Semua" active={component.filterStatusIndex === 0} onClick={() => {component.setFilterStatusIndex(0); StatusFilteredDataHandler(component.userData[0]?.user_id, 'Semua')}}/>
@@ -288,7 +288,7 @@ export default function Page(){
                     <Container>
                         <div className="flex justify-between items-center">
                             <h1 className="text-lg font-semibold">Rekapan Iuran Bulanan</h1>
-                            <input type="month" name="month" id="month" onChange={dateFilterHandler} className="bg-blue-500 text-white [&::-webkit-calendar-picker-indicator]:invert-[1] outline-none p-2 rounded-md [&::-webkit-datetime-edit]:text-sm" defaultValue={`${new Date().getFullYear()}-${new Date().getMonth() + 1}`}/>
+                            <input type="month" name="month" id="month" onChange={dateFilterHandler} className="bg-blue-500 text-white [&::-webkit-calendar-picker-indicator]:invert-[1] outline-none p-2 rounded-md [&::-webkit-datetime-edit]:text-sm" defaultValue={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`}/>
                         </div>
                         <div className="mt-8 flex flex-col gap-4">
                             {component.feeList.map((fee: schema.feesType) => {

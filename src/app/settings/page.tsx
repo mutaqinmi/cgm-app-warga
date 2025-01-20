@@ -109,7 +109,7 @@ export default function Tentang(){
 
     return <NavigationBar sidebarIndex={2}>
         {!component.userData.length ? <div className="w-full h-screen flex flex-col gap-8 justify-center items-center text-center">
-            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan.</span>
+            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan.</span>
         </div> : <div className="mt-8 w-full grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 flex flex-col gap-8 rounded-lg p-4 h-fit bg-white">
                 <ul>

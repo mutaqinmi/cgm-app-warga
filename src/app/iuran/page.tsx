@@ -146,7 +146,7 @@ function Iuran() {
     }, [])
 
     const currentMonthFeeAPI = useCallback(async (user_id: number, pagination: number) => {        
-        const currentMonth = new Date().getMonth() + 1;
+        const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
         const currentYear = new Date().getFullYear();
 
         setIsLoading(true);
@@ -403,7 +403,7 @@ function Iuran() {
     
     return isLoading ? <LoadingAnimation/> : component.currentMonthData ? <NavigationBar sidebarIndex={1}>
         {!component.currentMonthData.length ? <div className="w-full h-screen flex flex-col gap-8 justify-center items-center text-center">
-            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan</span>
+            <span>Iuran bulan {dateConvert.toString(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`)} belum diatur oleh Admin. Segera hubungi Admin untuk bantuan</span>
         </div> : <>
             <div className="mt-8 flex justify-between items-center">
                 <div>
@@ -433,7 +433,7 @@ function Iuran() {
                 <div className="col-span-1 md:col-span-3 flex flex-col gap-8">
                     <div className={`rounded-lg pt-4 ${paymentStatus(component.userData[0]?.payments.payment_description!)}`}>
                         <div className="mb-3 flex gap-2 px-4 text-white">
-                            <h1>Iuran Bulan {dateConvert.toString(`${new Date().getFullYear()}-${new Date().getMonth() + 1}`)}</h1>
+                            <h1>Iuran Bulan {dateConvert.toString(`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`)}</h1>
                             <span className="leading-none">&#8226;</span>
                             <StatusChip status={component.userData[0]?.payments.payment_description!}/>
                         </div>
@@ -474,7 +474,7 @@ function Iuran() {
                     <Container>
                         <div className="flex justify-between items-center">
                             <h1 className="text-lg font-semibold">Rekapan Iuran Bulanan</h1>
-                            <input type="month" name="month" id="month" onChange={dateFilterHandler} className="bg-blue-500 text-white [&::-webkit-calendar-picker-indicator]:invert-[1] outline-none p-2 rounded-md [&::-webkit-datetime-edit]:text-sm" defaultValue={`${new Date().getFullYear()}-${new Date().getMonth() + 1}`}/>
+                            <input type="month" name="month" id="month" onChange={dateFilterHandler} className="bg-blue-500 text-white [&::-webkit-calendar-picker-indicator]:invert-[1] outline-none p-2 rounded-md [&::-webkit-datetime-edit]:text-sm" defaultValue={`${new Date().getFullYear()}-${(new Date().getMonth() + 1).toString().padStart(2, '0')}`}/>
                         </div>
                         <div className="mt-8 flex flex-col gap-4">
                             {component.feeList.map((fee: schema.feesType) => {
