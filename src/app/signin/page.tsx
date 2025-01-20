@@ -54,6 +54,7 @@ export default function Page(){
                 localStorage.setItem("user_id", user_id.toString());
 
                 route.push("/beranda");
+                location.reload();
             }
         }).catch((error: AxiosError) => {
             const {message} = error.response?.data as {message: string};
